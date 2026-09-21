@@ -1,0 +1,2554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APEXFORGE | Elite Performance Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #7BBFF7;
+    --orange: #FFAA78;
+    --dark: #0A0A0A;
+    --darker: #050505;
+    --gray: #1A1A1A;
+    --light-gray: #2A2A2A;
+    --text: #FFF3B0;
+    --muted: #888;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--red);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+    mix-blend-mode: difference;
+  }
+  .cursor-follower {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(123,191,247,0.5);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.4s ease, width 0.3s, height 0.3s;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%;
+    padding: 20px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    z-index: 1000;
+    background: linear-gradient(to bottom, rgba(5,5,5,0.95), transparent);
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .logo span { color: var(--red); }
+  nav ul { list-style: none; display: flex; gap: 40px; }
+  nav ul li a {
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  nav ul li a:hover { color: var(--red); }
+
+  /* HERO */
+  #hero {
+    height: 100vh;
+    position: relative;
+    display: flex; align-items: center;
+    overflow: hidden;
+    padding: 0 60px;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: 
+      radial-gradient(ellipse at 70% 50%, rgba(123,191,247,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 80%, rgba(255,170,120,0.06) 0%, transparent 50%),
+      var(--darker);
+  }
+  .hero-lines {
+    position: absolute; inset: 0;
+    background-image: 
+      repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(255,255,255,0.02) 80px),
+      repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(255,255,255,0.02) 80px);
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 750px; }
+  .hero-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; letter-spacing: 5px;
+    text-transform: uppercase; color: var(--red);
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--red);
+  }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(80px, 12vw, 160px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+  }
+  h1 .outline {
+    -webkit-text-stroke: 1px rgba(240,237,232,0.3);
+    color: transparent;
+  }
+  .hero-desc {
+    margin: 30px 0 50px;
+    font-size: 16px; line-height: 1.7;
+    color: var(--muted);
+    max-width: 420px;
+    font-weight: 300;
+  }
+  .hero-btns { display: flex; gap: 20px; align-items: center; }
+  .btn-primary {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 16px 40px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; letter-spacing: 3px; text-transform: uppercase;
+    cursor: pointer;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    transition: background 0.3s, transform 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--orange); transform: translateY(-2px); }
+  .btn-ghost {
+    color: var(--text); border: none; background: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; letter-spacing: 3px; text-transform: uppercase;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none;
+    transition: gap 0.3s, color 0.3s;
+  }
+  .btn-ghost:hover { gap: 16px; color: var(--red); }
+  .btn-ghost .arrow { font-size: 20px; }
+
+  .hero-stats {
+    position: absolute; bottom: 60px; right: 60px;
+    display: flex; gap: 50px; z-index: 2;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px; color: var(--red);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .scroll-indicator {
+    position: absolute; bottom: 60px; left: 60px;
+    writing-mode: vertical-rl;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--muted);
+    display: flex; align-items: center; gap: 16px;
+  }
+  .scroll-indicator::after {
+    content: '';
+    width: 1px; height: 60px;
+    background: linear-gradient(to bottom, var(--muted), transparent);
+    animation: scrollLine 1.5s ease-in-out infinite;
+  }
+  @keyframes scrollLine {
+    0%,100% { transform: scaleY(1); opacity: 1; }
+    50% { transform: scaleY(0.5); opacity: 0.5; }
+  }
+
+  /* MARQUEE */
+  .marquee-section {
+    border-top: 1px solid var(--light-gray);
+    border-bottom: 1px solid var(--light-gray);
+    overflow: hidden;
+    padding: 18px 0;
+    background: var(--gray);
+  }
+  .marquee-track {
+    display: flex; gap: 0;
+    animation: marquee 20s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px; letter-spacing: 4px;
+    color: var(--muted);
+    padding: 0 40px;
+    display: flex; align-items: center; gap: 40px;
+  }
+  .marquee-item .dot {
+    width: 6px; height: 6px;
+    background: var(--red); border-radius: 50%;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* SECTION COMMON */
+  section { padding: 120px 60px; }
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; letter-spacing: 5px;
+    text-transform: uppercase; color: var(--red);
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 6vw, 80px);
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+
+  /* TRAINER SECTION */
+  #trainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: center;
+  }
+  .trainer-img-wrap {
+    position: relative;
+    aspect-ratio: 3/4;
+    max-height: 600px;
+  }
+  .trainer-img-placeholder {
+    width: 100%; height: 100%;
+    background: 
+      linear-gradient(135deg, var(--gray) 0%, var(--light-gray) 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px;
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); font-size: 13px;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%);
+  }
+  .trainer-icon { font-size: 80px; }
+  .trainer-badge {
+    position: absolute;
+    bottom: -20px; right: -20px;
+    background: var(--red);
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    line-height: 1;
+  }
+  .trainer-badge span {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .trainer-info h2 { margin-bottom: 8px; }
+  .trainer-role {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--orange);
+    margin-bottom: 24px;
+  }
+  .trainer-bio {
+    color: var(--muted); line-height: 1.8;
+    font-weight: 300; margin-bottom: 40px;
+  }
+  .cert-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .cert-tag {
+    border: 1px solid var(--light-gray);
+    padding: 8px 16px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted);
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  }
+
+  /* PROGRAMS */
+  #programs { background: var(--gray); }
+  .programs-header {
+    display: flex; justify-content: space-between;
+    align-items: flex-end; margin-bottom: 60px;
+  }
+  .programs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .program-card {
+    background: var(--dark);
+    padding: 50px 40px;
+    position: relative; overflow: hidden;
+    transition: transform 0.3s;
+    cursor: pointer;
+  }
+  .program-card::before {
+    content: '';
+    position: absolute; bottom: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(to right, var(--red), var(--orange));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .program-card:hover::before { transform: scaleX(1); }
+  .program-card:hover { transform: translateY(-4px); }
+  .program-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    color: var(--light-gray);
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+  .program-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+  .program-desc {
+    color: var(--muted); font-size: 14px;
+    line-height: 1.7; font-weight: 300;
+    margin-bottom: 30px;
+  }
+  .program-meta {
+    display: flex; gap: 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .program-meta span { color: var(--red); }
+
+  /* BMI CALCULATOR */
+  #calculator {
+    background: var(--darker);
+    position: relative; overflow: hidden;
+  }
+  #calculator::before {
+    content: 'BMI';
+    position: absolute; right: -20px; top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 300px; color: rgba(255,255,255,0.02);
+    pointer-events: none; line-height: 1;
+  }
+  .calc-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+  }
+  .calc-form { max-width: 500px; }
+  .calc-form .section-title { margin-bottom: 40px; }
+  .input-group { margin-bottom: 24px; }
+  .input-group label {
+    display: block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .input-row { display: flex; gap: 12px; }
+  .input-group input, .input-group select {
+    width: 100%;
+    background: var(--gray);
+    border: 1px solid var(--light-gray);
+    color: var(--text);
+    padding: 14px 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s;
+    -webkit-appearance: none;
+  }
+  .input-group input:focus { border-color: var(--red); }
+  .toggle-group { display: flex; gap: 2px; margin-bottom: 30px; }
+  .toggle-btn {
+    flex: 1;
+    background: var(--gray);
+    border: 1px solid var(--light-gray);
+    color: var(--muted);
+    padding: 12px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .toggle-btn.active {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+  }
+
+  .bmi-result {
+    text-align: center;
+    position: relative;
+  }
+  .bmi-circle {
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    border: 2px solid var(--light-gray);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    margin: 0 auto 40px;
+    position: relative;
+    transition: border-color 0.5s;
+  }
+  .bmi-circle::before {
+    content: '';
+    position: absolute; inset: -10px;
+    border-radius: 50%;
+    border: 1px solid rgba(123,191,247,0.2);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.5; }
+  }
+  .bmi-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px; line-height: 1;
+    color: var(--red);
+    transition: color 0.5s;
+  }
+  .bmi-cat {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .bmi-scale {
+    display: flex; gap: 4px;
+    margin-top: 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; letter-spacing: 2px;
+  }
+  .scale-item {
+    flex: 1; padding: 8px 4px; text-align: center;
+    text-transform: uppercase; opacity: 0.4;
+    transition: opacity 0.3s;
+    font-size: 9px;
+  }
+  .scale-item.active { opacity: 1; }
+  .scale-item:nth-child(1) { background: rgba(100,160,255,0.2); color: #64a0ff; }
+  .scale-item:nth-child(2) { background: rgba(100,200,100,0.2); color: #64c864; }
+  .scale-item:nth-child(3) { background: rgba(255,200,50,0.2); color: #ffc832; }
+  .scale-item:nth-child(4) { background: rgba(255,170,120,0.2); color: var(--orange); }
+  .scale-item:nth-child(5) { background: rgba(123,191,247,0.2); color: var(--red); }
+
+  /* WORKOUT BUILDER */
+  #workout { background: var(--gray); }
+  .workout-builder {
+    margin-top: 50px;
+    border: 1px solid var(--light-gray);
+  }
+  .builder-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--light-gray);
+  }
+  .tab-btn {
+    flex: 1; padding: 18px;
+    background: none; border: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--muted);
+    cursor: pointer;
+    transition: all 0.3s;
+    border-bottom: 2px solid transparent;
+  }
+  .tab-btn.active {
+    color: var(--red);
+    border-bottom-color: var(--red);
+    background: rgba(123,191,247,0.05);
+  }
+  .tab-content { display: none; padding: 40px; }
+  .tab-content.active { display: block; }
+  .exercise-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .exercise-card {
+    background: var(--dark);
+    padding: 20px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .exercise-card:hover { border-color: var(--red); }
+  .exercise-card.selected {
+    border-color: var(--red);
+    background: rgba(123,191,247,0.08);
+  }
+  .exercise-card.selected::after {
+    content: '✓';
+    position: absolute; top: 12px; right: 12px;
+    color: var(--red); font-size: 14px;
+  }
+  .exercise-icon { font-size: 30px; margin-bottom: 10px; }
+  .exercise-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 4px;
+  }
+  .exercise-detail {
+    font-size: 12px; color: var(--muted);
+  }
+  .workout-summary {
+    margin-top: 30px;
+    padding: 24px;
+    background: var(--dark);
+    display: flex; align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .selected-count {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .selected-count span { color: var(--red); font-size: 24px; }
+
+  /* TESTIMONIALS */
+  #testimonials { position: relative; overflow: hidden; }
+  .testimonials-track {
+    display: flex; gap: 30px;
+    transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+  }
+  .testimonial-card {
+    min-width: 380px;
+    background: var(--gray);
+    padding: 50px 40px;
+    position: relative;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+  }
+  .quote-mark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 120px; color: var(--red);
+    line-height: 0.7; opacity: 0.3;
+    position: absolute; top: 20px; left: 30px;
+  }
+  .testimonial-text {
+    font-size: 15px; line-height: 1.8;
+    color: var(--muted); font-weight: 300;
+    margin-bottom: 30px; position: relative; z-index: 1;
+    margin-top: 40px;
+  }
+  .testimonial-author {
+    display: flex; align-items: center; gap: 16px;
+  }
+  .author-avatar {
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    background: var(--light-gray);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    border: 2px solid var(--red);
+  }
+  .author-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px; letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .author-result { font-size: 13px; color: var(--orange); font-weight: 300; }
+  .testimonial-controls {
+    display: flex; gap: 12px; margin-top: 50px;
+  }
+  .t-btn {
+    width: 50px; height: 50px;
+    background: none;
+    border: 1px solid var(--light-gray);
+    color: var(--text); font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .t-btn:hover { background: var(--red); border-color: var(--red); }
+
+  /* CONTACT */
+  #contact {
+    background: var(--darker);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: start;
+  }
+  .contact-info { padding-top: 20px; }
+  .contact-item {
+    display: flex; gap: 20px;
+    margin-bottom: 30px;
+    align-items: flex-start;
+  }
+  .contact-icon {
+    width: 50px; height: 50px;
+    background: var(--gray);
+    display: flex; align-items: center;
+    justify-content: center; font-size: 20px;
+    flex-shrink: 0;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .contact-detail {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .contact-value { font-size: 16px; }
+  .contact-form { }
+  .form-group { margin-bottom: 20px; }
+  .form-group input, .form-group textarea {
+    width: 100%;
+    background: var(--gray);
+    border: 1px solid var(--light-gray);
+    border-top: none; border-left: none; border-right: none;
+    border-bottom: 1px solid var(--light-gray);
+    color: var(--text);
+    padding: 16px 0;
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    outline: none;
+    background: transparent;
+    transition: border-color 0.3s;
+  }
+  .form-group input::placeholder,
+  .form-group textarea::placeholder { color: var(--muted); }
+  .form-group input:focus,
+  .form-group textarea:focus { border-bottom-color: var(--red); }
+  .form-group textarea { height: 120px; resize: none; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  /* FOOTER */
+  footer {
+    background: var(--darker);
+    border-top: 1px solid var(--light-gray);
+    padding: 40px 60px;
+    display: flex; justify-content: space-between;
+    align-items: center;
+  }
+  footer .logo { font-size: 20px; }
+  .footer-text {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--muted);
+  }
+
+  /* ANIMATIONS */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* TEAM SECTION */
+  .team-card {
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+  .team-card:hover { transform: translateY(-4px); }
+  .team-img {
+    width: 100%; aspect-ratio: 1/1.1;
+    background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 80px;
+    transition: transform 0.5s ease;
+  }
+  .team-card:hover .team-img { transform: scale(1.05); }
+  .team-overlay {
+    padding: 30px 28px;
+    background: var(--dark);
+    border-top: 3px solid var(--red);
+  }
+  .team-specialty {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--orange);
+    margin-bottom: 8px;
+  }
+  .team-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px; letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .team-certs {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; letter-spacing: 1px;
+    color: var(--muted); margin-bottom: 14px;
+  }
+  .team-bio {
+    font-size: 13px; color: var(--muted);
+    line-height: 1.7; font-weight: 300;
+  }
+
+  /* DIET / NUTRITION */
+  .diet-card {
+    background: var(--dark);
+    padding: 50px 40px;
+    position: relative; overflow: hidden;
+    transition: transform 0.3s;
+    cursor: pointer;
+  }
+  .diet-card::before {
+    content: '';
+    position: absolute; bottom: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(to right, var(--orange), var(--red));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .diet-card:hover::before { transform: scaleX(1); }
+  .diet-card:hover { transform: translateY(-4px); }
+  .diet-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px; color: var(--light-gray);
+    line-height: 1; margin-bottom: 20px;
+  }
+  .diet-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; letter-spacing: 2px; margin-bottom: 16px;
+  }
+  .diet-desc {
+    color: var(--muted); font-size: 14px;
+    line-height: 1.7; font-weight: 300; margin-bottom: 24px;
+  }
+  .diet-macros {
+    display: flex; gap: 20px; margin-bottom: 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; letter-spacing: 2px;
+  }
+  .diet-macro-item { color: var(--muted); }
+  .diet-meta {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted);
+    border-top: 1px solid var(--light-gray);
+    padding-top: 18px; margin-top: 10px;
+  }
+  @media (max-width:900px) {
+    .macro-calc-grid { grid-template-columns: 1fr !important; }
+    .nutrition-principles-grid { grid-template-columns: 1fr 1fr !important; }
+  }
+
+  /* HABIT TRACKER */
+  .tracker-range {
+    -webkit-appearance: none;
+    width: 100%; height: 3px;
+    background: var(--light-gray);
+    outline: none; border-radius: 2px;
+  }
+  .tracker-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    border-radius: 2px;
+    background: var(--c, var(--red));
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .tracker-range::-webkit-slider-thumb:hover { transform: scale(1.3); }
+  .tracker-stat-box {
+    background: var(--dark);
+    padding: 24px 20px;
+    border-top: 3px solid var(--bc, var(--red));
+    text-align: center;
+  }
+  .tsb-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 38px; color: var(--bc, var(--red));
+    line-height: 1;
+  }
+  .tsb-lbl {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--text);
+    margin-top: 4px;
+  }
+  .tsb-unit {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px; letter-spacing: 2px;
+    color: var(--muted); margin-top: 2px;
+  }
+  @media (max-width:900px) {
+    #tracker > div > div { grid-template-columns: 1fr !important; }
+    #trackerStats { grid-template-columns: repeat(3,1fr) !important; }
+  }
+
+  /* ====== PAGE NAV TABS ====== */
+  .page-nav-wrap {
+    position: sticky; top: 0; z-index: 900;
+    background: rgba(5,5,5,0.97);
+    border-bottom: 1px solid var(--light-gray);
+    backdrop-filter: blur(10px);
+  }
+  .page-nav {
+    display: flex; overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0 60px;
+  }
+  .page-nav::-webkit-scrollbar { display: none; }
+  .page-nav-btn {
+    flex-shrink: 0;
+    background: none; border: none;
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 18px 28px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.3s, border-color 0.3s;
+    position: relative;
+    white-space: nowrap;
+  }
+  .page-nav-btn:hover { color: var(--text); }
+  .page-nav-btn.active {
+    color: var(--red);
+    border-bottom-color: var(--red);
+  }
+  .page-nav-btn .pnb-num {
+    font-size: 10px; color: var(--red);
+    margin-right: 6px; opacity: 0.6;
+  }
+
+  /* ====== PAGE SECTIONS ====== */
+  .page-section { display: none; }
+  .page-section.active { display: block; }
+
+  @media (max-width: 900px) {
+    .page-nav { padding: 0 20px; }
+    .page-nav-btn { padding: 16px 16px; font-size: 10px; letter-spacing: 2px; }
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 20px 30px; }
+    nav ul { display: none; }
+    section { padding: 80px 30px; }
+    #hero { padding: 0 30px; }
+    .hero-stats { right: 30px; bottom: 30px; }
+    #trainer, .calc-grid, #contact { grid-template-columns: 1fr; gap: 50px; }
+    .programs-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85); z-index: 9000;
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--gray);
+    border: 1px solid var(--light-gray);
+    max-width: 580px; width: 100%;
+    max-height: 90vh; overflow-y: auto;
+    position: relative;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+    animation: modalIn 0.25s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .modal-header {
+    padding: 32px 36px 20px;
+    border-bottom: 1px solid var(--light-gray);
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .modal-body { padding: 28px 36px 36px; }
+  .modal-close {
+    background: none; border: none;
+    color: var(--muted); font-size: 22px;
+    cursor: pointer; line-height: 1;
+    transition: color 0.2s;
+    flex-shrink: 0; margin-left: 16px;
+  }
+  .modal-close:hover { color: var(--text); }
+  .modal-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--red);
+    margin-bottom: 8px;
+  }
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px; letter-spacing: 2px;
+    line-height: 1;
+  }
+  .modal-meta {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    margin: 18px 0;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+  }
+  .modal-meta-item { color: var(--muted); }
+  .modal-meta-item span { color: var(--red); }
+  .modal-desc {
+    color: var(--muted); font-size: 14px;
+    line-height: 1.8; font-weight: 300; margin-bottom: 24px;
+  }
+  .modal-btn {
+    display: inline-block;
+    background: var(--red); color: #0A0A0A;
+    border: none; padding: 14px 36px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
+    cursor: pointer;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.3s, transform 0.2s;
+    font-weight: 700;
+  }
+  .modal-btn:hover { background: var(--orange); transform: translateY(-2px); }
+
+  /* Program card hover hint */
+  .program-card .card-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--red); opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .program-card:hover .card-cta { opacity: 1; }
+
+  /* Team card hover hint */
+  .team-card .card-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 12px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--red); opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .team-card:hover .card-cta { opacity: 1; }
+
+  /* Height Calculator */
+  .height-calc-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 60px; align-items: start; margin-top: 40px;
+  }
+  .height-result-box {
+    background: var(--dark);
+    border: 1px solid var(--light-gray);
+    padding: 36px;
+    text-align: center;
+  }
+  .height-result-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px; line-height: 1;
+    color: var(--red);
+    transition: color 0.4s;
+  }
+  .height-result-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--muted);
+    margin-top: 6px;
+  }
+  .height-bars {
+    display: flex; flex-direction: column; gap: 10px;
+    margin-top: 28px;
+  }
+  .height-bar-row {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .height-bar-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); min-width: 90px; text-align: right;
+  }
+  .height-bar-track {
+    flex: 1; height: 6px;
+    background: var(--light-gray); border-radius: 3px; overflow: hidden;
+  }
+  .height-bar-fill {
+    height: 100%; background: var(--red);
+    border-radius: 3px; transition: width 0.6s ease;
+    width: 0%;
+  }
+  .height-bar-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px; color: var(--text); min-width: 40px;
+  }
+  @media (max-width: 900px) {
+    .height-calc-grid { grid-template-columns: 1fr !important; }
+    .modal-box { clip-path: none; }
+    .modal-header, .modal-body { padding-left: 24px; padding-right: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursorFollower"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-header">
+      <div>
+        <div class="modal-label" id="modalLabel"></div>
+        <div class="modal-title" id="modalTitle"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal(true)">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-meta" id="modalMeta"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div id="modalExtra"></div>
+      <button class="modal-btn" onclick="modalEnquire()">Enquire Now →</button>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">APEX<span>FORGE</span></a>
+  <ul>
+    <li><a href="#hero" onclick="showPage('trainers')">Trainers</a></li>
+    <li><a href="#hero" onclick="showPage('programs')">Programs</a></li>
+    <li><a href="#hero" onclick="showPage('nutrition')">Nutrition</a></li>
+    <li><a href="#hero" onclick="showPage('tools')">Tools</a></li>
+    <li><a href="#hero" onclick="showPage('tracker')">Tracker</a></li>
+    <li><a href="#hero" onclick="showPage('results')">Results</a></li>
+    <li><a href="#hero" onclick="showPage('contact')">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Elite Height Enhancement Studio</div>
+    <h1>
+      FORGE<br>
+      <span class="outline">YOUR</span><br>
+      LIMITS
+    </h1>
+    <p class="hero-desc">
+      Science-backed height enhancement, spinal decompression, and postural correction.
+      Not just training — a complete system to unlock your maximum natural height potential.
+    </p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">Start Training</a>
+      <a href="#programs" class="btn-ghost">
+        Explore Programs <span class="arrow">→</span>
+      </a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num" data-target="847">0</div>
+      <div class="stat-label">Clients Transformed</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-target="12">0</div>
+      <div class="stat-label">Years Experience</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-target="98">0</div>
+      <div class="stat-label">Success Rate %</div>
+    </div>
+  </div>
+  <div class="scroll-indicator">Scroll Down</div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <div class="marquee-item">HEIGHT ENHANCEMENT <div class="dot"></div></div>
+    <div class="marquee-item">SPINAL DECOMPRESSION <div class="dot"></div></div>
+    <div class="marquee-item">POSTURAL CORRECTION <div class="dot"></div></div>
+    <div class="marquee-item">GROWTH AXIS TRAINING <div class="dot"></div></div>
+    <div class="marquee-item">STRETCHING PROTOCOLS <div class="dot"></div></div>
+    <div class="marquee-item">SPINE ELONGATION <div class="dot"></div></div>
+    <div class="marquee-item">FLEXIBILITY WORK <div class="dot"></div></div>
+    <div class="marquee-item">NUTRITION COACHING <div class="dot"></div></div>
+    <!-- Duplicate for seamless loop -->
+    <div class="marquee-item">HEIGHT ENHANCEMENT <div class="dot"></div></div>
+    <div class="marquee-item">SPINAL DECOMPRESSION <div class="dot"></div></div>
+    <div class="marquee-item">POSTURAL CORRECTION <div class="dot"></div></div>
+    <div class="marquee-item">GROWTH AXIS TRAINING <div class="dot"></div></div>
+    <div class="marquee-item">STRETCHING PROTOCOLS <div class="dot"></div></div>
+    <div class="marquee-item">SPINE ELONGATION <div class="dot"></div></div>
+    <div class="marquee-item">FLEXIBILITY WORK <div class="dot"></div></div>
+    <div class="marquee-item">NUTRITION COACHING <div class="dot"></div></div>
+  </div>
+</div>
+
+<!-- PAGE NAVIGATION BAR -->
+<div class="page-nav-wrap" id="pageNavWrap">
+  <div class="page-nav">
+    <button class="page-nav-btn active" onclick="showPage('trainers',this)"><span class="pnb-num">01</span>Our Trainers</button>
+    <button class="page-nav-btn" onclick="showPage('programs',this)"><span class="pnb-num">02</span>Programs</button>
+    <button class="page-nav-btn" onclick="showPage('nutrition',this)"><span class="pnb-num">03</span>Nutrition</button>
+    <button class="page-nav-btn" onclick="showPage('tools',this)"><span class="pnb-num">04</span>BMI &amp; Tools</button>
+    <button class="page-nav-btn" onclick="showPage('tracker',this)"><span class="pnb-num">05</span>Habit Tracker</button>
+    <button class="page-nav-btn" onclick="showPage('results',this)"><span class="pnb-num">06</span>Results</button>
+    <button class="page-nav-btn" onclick="showPage('contact',this)"><span class="pnb-num">07</span>Contact</button>
+  </div>
+</div>
+
+<!-- PAGE: TRAINERS -->
+<div class="page-section active" id="page-trainers">
+<section id="trainer">
+  <div class="trainer-img-wrap fade-up">
+    <div class="trainer-img-placeholder">
+      <div class="trainer-icon">💪</div>
+      <div>Aditya Gaikwad</div>
+    </div>
+    <div class="trainer-badge">12<span>YEARS</span></div>
+  </div>
+  <div class="trainer-info fade-up">
+    <div class="section-label">Head Height Specialist</div>
+    <h2 class="section-title">ADITYA<br>GAIKWAD</h2>
+    <div class="trainer-role">Height & Growth Specialist · Postural Correction Expert</div>
+    <p class="trainer-bio">
+      Aditya Gaikwad is India's leading height enhancement and postural correction coach, 
+      combining spinal decompression therapy, targeted stretching protocols, and growth-axis 
+      training to help clients unlock their maximum natural height potential — at any age.
+    </p>
+    <p class="trainer-bio" style="margin-top:16px;">
+      His science-backed methodology focuses on spinal elongation, posture realignment, 
+      and growth plate stimulation — delivering measurable height gains of 1–4 inches 
+      for clients across all age groups through dedicated programming.
+    </p>
+    <div class="cert-list">
+      <div class="cert-tag">Spinal Decompression</div>
+      <div class="cert-tag">Postural Correction</div>
+      <div class="cert-tag">Growth Axis Training</div>
+      <div class="cert-tag">Sports Physiotherapy</div>
+      <div class="cert-tag">Yoga & Flexibility</div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team" style="background:var(--gray);">
+  <div class="fade-up" style="margin-bottom:60px;">
+    <div class="section-label">The Squad</div>
+    <div class="section-title">MEET THE<br>COACHES</div>
+  </div>
+  <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:2px;">
+    <!-- Trainer 1 -->
+    <div class="team-card fade-up" onclick="openTeamModal(0)" style="cursor:pointer;">
+      <div class="team-img">📏</div>
+      <div class="team-overlay">
+        <div class="team-specialty">Height Enhancement & Postural Correction</div>
+        <div class="team-name">ADITYA GAIKWAD</div>
+        <div class="team-certs">Spinal Decompression · Growth Axis Training · Sports Physio</div>
+        <p class="team-bio">India's leading height specialist. Combines spinal elongation, posture correction, and growth stimulation protocols to deliver 1–4 inch gains for clients of all ages.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
+          <span class="cert-tag">Height Gain</span>
+          <span class="cert-tag">Posture Fix</span>
+        </div>
+        <div class="card-cta" style="margin-top:16px;">View Profile →</div>
+      </div>
+    </div>
+    <!-- Trainer 2 -->
+    <div class="team-card fade-up" onclick="openTeamModal(1)" style="cursor:pointer;">
+      <div class="team-img" style="background:linear-gradient(135deg,#1a1a2e,#2a1a2e);">🥊</div>
+      <div class="team-overlay">
+        <div class="team-specialty">HIIT & Combat Conditioning</div>
+        <div class="team-name">SANSKAR DHOBE</div>
+        <div class="team-certs">ACE-CPT · Boxing Coach · TRX Specialist</div>
+        <p class="team-bio">Former national-level boxer with 8 years in high-performance conditioning. Merges combat athletics with metabolic training for elite fat loss.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
+          <span class="cert-tag">HIIT</span>
+          <span class="cert-tag">Fat Loss</span>
+        </div>
+        <div class="card-cta" style="margin-top:16px;">View Profile →</div>
+      </div>
+    </div>
+    <!-- Trainer 3 -->
+    <div class="team-card fade-up" onclick="openTeamModal(2)" style="cursor:pointer;">
+      <div class="team-img" style="background:linear-gradient(135deg,#1a2a1a,#1a2e1a);">🧘</div>
+      <div class="team-overlay">
+        <div class="team-specialty">Mobility & Recovery</div>
+        <div class="team-name">NITESH PATIL</div>
+        <div class="team-certs">NASM-CES · FMS L2 · Yoga RYT-500</div>
+        <p class="team-bio">Corrective exercise expert who rebuilds structural integrity and eliminates chronic pain. Every athlete needs a foundation — Sofia builds yours.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
+          <span class="cert-tag">Mobility</span>
+          <span class="cert-tag">Rehab</span>
+        </div>
+        <div class="card-cta" style="margin-top:16px;">View Profile →</div>
+      </div>
+    </div>
+    <!-- Trainer 4 -->
+    <div class="team-card fade-up" onclick="openTeamModal(3)" style="cursor:pointer;">
+      <div class="team-img" style="background:linear-gradient(135deg,#2a1a0a,#2e200a);">🍽️</div>
+      <div class="team-overlay">
+        <div class="team-specialty">Sports Nutrition & Dietetics</div>
+        <div class="team-name">PARTH ASATI</div>
+        <div class="team-certs">RD · CSSD · Precision Nutrition L2</div>
+        <p class="team-bio">Registered dietitian and performance nutrition specialist. Builds science-backed meal protocols that fuel training, optimize recovery, and transform body composition.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
+          <span class="cert-tag">Meal Plans</span>
+          <span class="cert-tag">Macros</span>
+        </div>
+        <div class="card-cta" style="margin-top:16px;">View Profile →</div>
+      </div>
+    </div>
+    <!-- Trainer 5 -->
+    <div class="team-card fade-up" onclick="openTeamModal(4)" style="cursor:pointer;">
+      <div class="team-img" style="background:linear-gradient(135deg,#0a1a2a,#0a2030);">⚡</div>
+      <div class="team-overlay">
+        <div class="team-specialty">Athletic Performance & Speed</div>
+        <div class="team-name">SHIVAM HANDE</div>
+        <div class="team-certs">NSCA-CSCS · Speed Coach · Sports Therapist</div>
+        <p class="team-bio">Speed and explosiveness specialist with a background in sprinting and court sports. Builds the athletic foundation that separates good athletes from exceptional ones.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
+          <span class="cert-tag">Explosiveness</span>
+          <span class="cert-tag">Speed</span>
+        </div>
+        <div class="card-cta" style="margin-top:16px;">View Profile →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- end page-trainers -->
+
+<!-- PAGE: PROGRAMS -->
+<div class="page-section" id="page-programs">
+<!-- PROGRAMS -->
+<section id="programs">
+  <div class="programs-header fade-up">
+    <div>
+      <div class="section-label">What We Offer</div>
+      <div class="section-title">TRAINING<br>PROGRAMS</div>
+    </div>
+  </div>
+  <div class="programs-grid">
+    <div class="program-card fade-up" onclick="openProgramModal(0)" style="cursor:pointer;">
+      <div class="program-num">01</div>
+      <div class="program-name">POWER PROTOCOL</div>
+      <p class="program-desc">
+        Raw strength development through progressive overload, 
+        compound movements, and precise periodization. Built for 
+        those who want to move serious weight.
+      </p>
+      <div class="program-meta">
+        <div><span>4×</span> / Week</div>
+        <div><span>16</span> Weeks</div>
+        <div><span>Intermediate</span></div>
+      </div>
+      <div class="card-cta">View Details →</div>
+    </div>
+    <div class="program-card fade-up" onclick="openProgramModal(1)" style="cursor:pointer;">
+      <div class="program-num">02</div>
+      <div class="program-name">SHRED SERIES</div>
+      <p class="program-desc">
+        High-intensity metabolic conditioning designed to torch 
+        fat while preserving — and often building — muscle mass. 
+        Aggressive results without sacrificing performance.
+      </p>
+      <div class="program-meta">
+        <div><span>5×</span> / Week</div>
+        <div><span>12</span> Weeks</div>
+        <div><span>All Levels</span></div>
+      </div>
+    </div>
+    <div class="program-card fade-up" onclick="openProgramModal(2)" style="cursor:pointer;">
+      <div class="program-num">03</div>
+      <div class="program-name">ATHLETE EDGE</div>
+      <p class="program-desc">
+        Sport-specific conditioning merging power, speed, agility, 
+        and endurance. Designed for competitive athletes demanding 
+        every possible edge.
+      </p>
+      <div class="program-meta">
+        <div><span>6×</span> / Week</div>
+        <div><span>20</span> Weeks</div>
+        <div><span>Advanced</span></div>
+      </div>
+    </div>
+    <div class="program-card fade-up" onclick="openProgramModal(3)" style="cursor:pointer;">
+      <div class="program-num">04</div>
+      <div class="program-name">BODY RECOMP</div>
+      <p class="program-desc">
+        Simultaneously build muscle and reduce body fat through 
+        intelligent training and nutrition synergy. The hardest 
+        goal — executed systematically.
+      </p>
+      <div class="program-meta">
+        <div><span>4×</span> / Week</div>
+        <div><span>24</span> Weeks</div>
+        <div><span>Intermediate</span></div>
+      </div>
+    </div>
+    <div class="program-card fade-up" onclick="openProgramModal(4)" style="cursor:pointer;">
+      <div class="program-num">05</div>
+      <div class="program-name">FOUNDATION</div>
+      <p class="program-desc">
+        The entry point for those new to structured training. 
+        Build the movement patterns, habits, and baseline fitness 
+        that make every future program more effective.
+      </p>
+      <div class="program-meta">
+        <div><span>3×</span> / Week</div>
+        <div><span>8</span> Weeks</div>
+        <div><span>Beginner</span></div>
+      </div>
+    </div>
+    <div class="program-card fade-up" onclick="openProgramModal(5)" style="cursor:pointer;">
+      <div class="program-num">06</div>
+      <div class="program-name">CUSTOM 1-ON-1</div>
+      <p class="program-desc">
+        Fully personalized coaching. Weekly program updates, 
+        direct communication, form reviews, and nutritional 
+        guidance. Your goals, your pace, your rules.
+      </p>
+      <div class="program-meta">
+        <div><span>Custom</span></div>
+        <div><span>Ongoing</span></div>
+        <div><span>Premium</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- end page-programs -->
+
+<!-- PAGE: NUTRITION -->
+<div class="page-section" id="page-nutrition">
+<!-- NUTRITION -->
+<section id="nutrition" style="background:var(--darker); position:relative; overflow:hidden;">
+  <div style="position:absolute;right:-30px;top:50%;transform:translateY(-50%);font-family:'Bebas Neue',sans-serif;font-size:280px;color:rgba(255,170,120,0.03);pointer-events:none;line-height:1;">FUEL</div>
+  <div class="fade-up" style="margin-bottom:60px; max-width:700px;">
+    <div class="section-label">Nutrition System</div>
+    <div class="section-title">FUEL THE<br>MACHINE</div>
+    <p style="color:var(--muted);line-height:1.8;font-weight:300;margin-top:20px;">Training is only 30% of the equation. What you eat — and when — determines the other 70%. Our integrated nutrition system is built around your physiology, not generic meal plans.</p>
+  </div>
+
+  <!-- Macro Calculator -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;margin-bottom:80px;" class="macro-calc-grid">
+    <div class="fade-up">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--orange);margin-bottom:24px;">Daily Macro Calculator</div>
+      <div class="input-group">
+        <label>Body Weight (kg)</label>
+        <input type="number" id="macroWeight" placeholder="75" oninput="calcMacros()" style="width:100%;background:var(--gray);border:1px solid var(--light-gray);color:var(--text);padding:14px 20px;font-family:'Barlow Condensed',sans-serif;font-size:16px;outline:none;">
+      </div>
+      <div class="input-group">
+        <label>Goal</label>
+        <select id="macroGoal" onchange="calcMacros()" style="width:100%;background:var(--gray);border:1px solid var(--light-gray);color:var(--text);padding:14px 20px;font-family:'Barlow Condensed',sans-serif;font-size:15px;outline:none;-webkit-appearance:none;">
+          <option value="cut">Cut (Fat Loss)</option>
+          <option value="maintain" selected>Maintain</option>
+          <option value="bulk">Bulk (Muscle Gain)</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>Activity Level</label>
+        <select id="macroActivity" onchange="calcMacros()" style="width:100%;background:var(--gray);border:1px solid var(--light-gray);color:var(--text);padding:14px 20px;font-family:'Barlow Condensed',sans-serif;font-size:15px;outline:none;-webkit-appearance:none;">
+          <option value="1.2">Sedentary (desk job)</option>
+          <option value="1.375">Light (1-3 days/wk)</option>
+          <option value="1.55" selected>Moderate (3-5 days/wk)</option>
+          <option value="1.725">Active (6-7 days/wk)</option>
+          <option value="1.9">Athlete (2× daily)</option>
+        </select>
+      </div>
+    </div>
+    <div class="fade-up" id="macroResult">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--orange);margin-bottom:24px;">Your Daily Targets</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+        <div class="macro-card" style="background:var(--gray);padding:24px;border-left:3px solid var(--red);text-align:center;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--red);line-height:1;" id="macroCalories">—</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:4px;">Calories</div>
+        </div>
+        <div class="macro-card" style="background:var(--gray);padding:24px;border-left:3px solid #64c8ff;text-align:center;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:48px;color:#64c8ff;line-height:1;" id="macroProtein">—</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:4px;">Protein (g)</div>
+        </div>
+        <div class="macro-card" style="background:var(--gray);padding:24px;border-left:3px solid #ffc832;text-align:center;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:48px;color:#ffc832;line-height:1;" id="macroCarbs">—</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:4px;">Carbs (g)</div>
+        </div>
+        <div class="macro-card" style="background:var(--gray);padding:24px;border-left:3px solid var(--orange);text-align:center;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--orange);line-height:1;" id="macroFat">—</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:4px;">Fat (g)</div>
+        </div>
+      </div>
+      <div id="macroNote" style="font-size:13px;color:var(--muted);line-height:1.7;padding:16px;background:rgba(255,170,120,0.07);border:1px solid rgba(255,170,120,0.2);display:none;"></div>
+    </div>
+  </div>
+
+  <!-- Meal Plans -->
+  <div class="fade-up" style="margin-bottom:40px;">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--orange);margin-bottom:30px;">Diet Protocols</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:2px;">
+      <div class="diet-card fade-up">
+        <div class="diet-num">01</div>
+        <div class="diet-name">PERFORMANCE CUT</div>
+        <p class="diet-desc">High-protein deficit protocol that shreds fat while protecting every gram of hard-earned muscle. Caloric cycling keeps metabolism firing.</p>
+        <div class="diet-macros">
+          <div class="diet-macro-item"><span style="color:var(--red);">P</span> 2.4g / kg</div>
+          <div class="diet-macro-item"><span style="color:#ffc832;">C</span> 3.0g / kg</div>
+          <div class="diet-macro-item"><span style="color:var(--orange);">F</span> 0.8g / kg</div>
+        </div>
+        <div class="diet-meta">
+          <span style="color:var(--orange);">–500 kcal</span> deficit &nbsp;·&nbsp; <span style="color:var(--orange);">12</span> weeks
+        </div>
+      </div>
+      <div class="diet-card fade-up">
+        <div class="diet-num">02</div>
+        <div class="diet-name">LEAN BULK</div>
+        <p class="diet-desc">Strategic caloric surplus engineered to maximize muscle synthesis with minimal fat gain. Nutrient timing synced to your training schedule.</p>
+        <div class="diet-macros">
+          <div class="diet-macro-item"><span style="color:var(--red);">P</span> 2.2g / kg</div>
+          <div class="diet-macro-item"><span style="color:#ffc832;">C</span> 5.5g / kg</div>
+          <div class="diet-macro-item"><span style="color:var(--orange);">F</span> 1.0g / kg</div>
+        </div>
+        <div class="diet-meta">
+          <span style="color:var(--orange);">+300 kcal</span> surplus &nbsp;·&nbsp; <span style="color:var(--orange);">20</span> weeks
+        </div>
+      </div>
+      <div class="diet-card fade-up">
+        <div class="diet-num">03</div>
+        <div class="diet-name">RECOMP PROTOCOL</div>
+        <p class="diet-desc">Maintenance calories, precision macros, and strategic meal timing to simultaneously build muscle and burn fat. The hardest protocol. The best results.</p>
+        <div class="diet-macros">
+          <div class="diet-macro-item"><span style="color:var(--red);">P</span> 2.6g / kg</div>
+          <div class="diet-macro-item"><span style="color:#ffc832;">C</span> 4.0g / kg</div>
+          <div class="diet-macro-item"><span style="color:var(--orange);">F</span> 0.9g / kg</div>
+        </div>
+        <div class="diet-meta">
+          <span style="color:var(--orange);">Maintenance</span> &nbsp;·&nbsp; <span style="color:var(--orange);">24</span> weeks
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nutrition Principles -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px;" class="nutrition-principles-grid fade-up">
+    <div style="background:var(--gray);padding:30px;border-top:3px solid var(--red);">
+      <div style="font-size:32px;margin-bottom:16px;">🥩</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;margin-bottom:10px;">PROTEIN FIRST</div>
+      <p style="color:var(--muted);font-size:13px;line-height:1.7;font-weight:300;">Every meal is built around protein. Hit your target and the rest follows.</p>
+    </div>
+    <div style="background:var(--gray);padding:30px;border-top:3px solid #ffc832;">
+      <div style="font-size:32px;margin-bottom:16px;">⏰</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;margin-bottom:10px;">TIMING MATTERS</div>
+      <p style="color:var(--muted);font-size:13px;line-height:1.7;font-weight:300;">Pre/post-workout nutrition windows are non-negotiable for performance gains.</p>
+    </div>
+    <div style="background:var(--gray);padding:30px;border-top:3px solid #64c8ff;">
+      <div style="font-size:32px;margin-bottom:16px;">💧</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;margin-bottom:10px;">HYDRATION</div>
+      <p style="color:var(--muted);font-size:13px;line-height:1.7;font-weight:300;">3L minimum daily. Dehydration kills performance before it kills thirst.</p>
+    </div>
+    <div style="background:var(--gray);padding:30px;border-top:3px solid var(--orange);">
+      <div style="font-size:32px;margin-bottom:16px;">🌙</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;margin-bottom:10px;">SLEEP & RECOVERY</div>
+      <p style="color:var(--muted);font-size:13px;line-height:1.7;font-weight:300;">Muscle grows during rest. 7–9 hours is a training variable, not a luxury.</p>
+    </div>
+  </div>
+</section>
+
+</div><!-- end page-nutrition -->
+
+<!-- PAGE: TOOLS (BMI + WORKOUT BUILDER) -->
+<div class="page-section" id="page-tools">
+<!-- BMI CALCULATOR -->
+<section id="calculator">
+  <div class="calc-grid">
+    <div class="calc-form fade-up">
+      <div class="section-label">Health Metrics</div>
+      <div class="section-title">BMI<br>CALCULATOR</div>
+
+      <div class="toggle-group">
+        <button class="toggle-btn active" onclick="setUnit('metric')">Metric (kg/cm)</button>
+        <button class="toggle-btn" onclick="setUnit('imperial')">Imperial (lbs/in)</button>
+      </div>
+
+      <div class="input-group">
+        <label>Weight</label>
+        <input type="number" id="weight" placeholder="70" oninput="calcBMI()">
+      </div>
+      <div class="input-group">
+        <label>Height</label>
+        <div class="input-row">
+          <input type="number" id="height" placeholder="175" oninput="calcBMI()">
+          <input type="number" id="height2" placeholder="0" oninput="calcBMI()" style="display:none; max-width:100px" title="inches">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Age</label>
+        <input type="number" id="age" placeholder="25" oninput="calcBMI()">
+      </div>
+    </div>
+
+    <div class="bmi-result fade-up">
+      <div class="bmi-circle" id="bmiCircle">
+        <div class="bmi-value" id="bmiValue">—</div>
+        <div class="bmi-cat" id="bmiCat">Enter your details</div>
+      </div>
+      <div class="bmi-scale">
+        <div class="scale-item" id="s1">Under<br>weight</div>
+        <div class="scale-item" id="s2">Normal</div>
+        <div class="scale-item" id="s3">Over<br>weight</div>
+        <div class="scale-item" id="s4">Obese<br>I</div>
+        <div class="scale-item" id="s5">Obese<br>II</div>
+      </div>
+      <p id="bmiAdvice" style="margin-top:24px; color:var(--muted); font-size:13px; line-height:1.6;"></p>
+    </div>
+  </div>
+</section>
+
+<!-- WORKOUT BUILDER -->
+<section id="workout">
+  <div class="section-label fade-up">Interactive Tool</div>
+  <div class="section-title fade-up">BUILD YOUR<br>WORKOUT</div>
+  <p style="color:var(--muted); margin-top:16px; max-width:500px; line-height:1.7; font-weight:300;" class="fade-up">
+    Select exercises from each muscle group to build your custom workout plan for the day.
+  </p>
+  <div class="workout-builder fade-up">
+    <div class="builder-tabs">
+      <button class="tab-btn active" onclick="showTab('chest',this)">Chest</button>
+      <button class="tab-btn" onclick="showTab('back',this)">Back</button>
+      <button class="tab-btn" onclick="showTab('legs',this)">Legs</button>
+      <button class="tab-btn" onclick="showTab('shoulders',this)">Shoulders</button>
+      <button class="tab-btn" onclick="showTab('arms',this)">Arms</button>
+      <button class="tab-btn" onclick="showTab('core',this)">Core</button>
+    </div>
+    <div id="tab-chest" class="tab-content active">
+      <div class="exercise-grid">
+        <div class="exercise-card" onclick="toggleExercise(this,'Bench Press')"><div class="exercise-icon">🏋️</div><div class="exercise-name">Bench Press</div><div class="exercise-detail">4 sets × 8-10 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Incline DB Press')"><div class="exercise-icon">💪</div><div class="exercise-name">Incline DB Press</div><div class="exercise-detail">3 sets × 10-12 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Cable Flyes')"><div class="exercise-icon">🔁</div><div class="exercise-name">Cable Flyes</div><div class="exercise-detail">3 sets × 12-15 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Push-Ups')"><div class="exercise-icon">🤸</div><div class="exercise-name">Push-Ups</div><div class="exercise-detail">3 sets × 20 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Dips')"><div class="exercise-icon">⚙️</div><div class="exercise-name">Dips</div><div class="exercise-detail">3 sets × failure</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Chest Press Machine')"><div class="exercise-icon">🏋️</div><div class="exercise-name">Chest Press Machine</div><div class="exercise-detail">3 sets × 12 reps</div></div>
+      </div>
+    </div>
+    <div id="tab-back" class="tab-content">
+      <div class="exercise-grid">
+        <div class="exercise-card" onclick="toggleExercise(this,'Deadlift')"><div class="exercise-icon">🏋️</div><div class="exercise-name">Deadlift</div><div class="exercise-detail">4 sets × 5-6 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Pull-Ups')"><div class="exercise-icon">🧗</div><div class="exercise-name">Pull-Ups</div><div class="exercise-detail">4 sets × max reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Bent Over Row')"><div class="exercise-icon">🔄</div><div class="exercise-name">Bent Over Row</div><div class="exercise-detail">4 sets × 8-10 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Lat Pulldown')"><div class="exercise-icon">🎯</div><div class="exercise-name">Lat Pulldown</div><div class="exercise-detail">3 sets × 10-12 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Cable Row')"><div class="exercise-icon">↔️</div><div class="exercise-name">Cable Row</div><div class="exercise-detail">3 sets × 12 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Face Pulls')"><div class="exercise-icon">😤</div><div class="exercise-name">Face Pulls</div><div class="exercise-detail">3 sets × 15-20 reps</div></div>
+      </div>
+    </div>
+    <div id="tab-legs" class="tab-content">
+      <div class="exercise-grid">
+        <div class="exercise-card" onclick="toggleExercise(this,'Back Squat')"><div class="exercise-icon">🏋️</div><div class="exercise-name">Back Squat</div><div class="exercise-detail">4 sets × 6-8 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Romanian Deadlift')"><div class="exercise-icon">🦵</div><div class="exercise-name">Romanian Deadlift</div><div class="exercise-detail">3 sets × 10-12 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Leg Press')"><div class="exercise-icon">🦿</div><div class="exercise-name">Leg Press</div><div class="exercise-detail">3 sets × 12-15 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Lunges')"><div class="exercise-icon">🚶</div><div class="exercise-name">Lunges</div><div class="exercise-detail">3 sets × 12 each</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Leg Curls')"><div class="exercise-icon">🔃</div><div class="exercise-name">Leg Curls</div><div class="exercise-detail">3 sets × 12-15 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Calf Raises')"><div class="exercise-icon">👟</div><div class="exercise-name">Calf Raises</div><div class="exercise-detail">4 sets × 20-25 reps</div></div>
+      </div>
+    </div>
+    <div id="tab-shoulders" class="tab-content">
+      <div class="exercise-grid">
+        <div class="exercise-card" onclick="toggleExercise(this,'OHP')"><div class="exercise-icon">🏋️</div><div class="exercise-name">Overhead Press</div><div class="exercise-detail">4 sets × 6-8 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Lateral Raises')"><div class="exercise-icon">🦅</div><div class="exercise-name">Lateral Raises</div><div class="exercise-detail">4 sets × 15-20 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Front Raises')"><div class="exercise-icon">🏹</div><div class="exercise-name">Front Raises</div><div class="exercise-detail">3 sets × 12-15 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Arnold Press')"><div class="exercise-icon">💪</div><div class="exercise-name">Arnold Press</div><div class="exercise-detail">3 sets × 10-12 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Rear Delt Flyes')"><div class="exercise-icon">🦋</div><div class="exercise-name">Rear Delt Flyes</div><div class="exercise-detail">3 sets × 15-20 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Shrugs')"><div class="exercise-icon">🤷</div><div class="exercise-name">Shrugs</div><div class="exercise-detail">3 sets × 12-15 reps</div></div>
+      </div>
+    </div>
+    <div id="tab-arms" class="tab-content">
+      <div class="exercise-grid">
+        <div class="exercise-card" onclick="toggleExercise(this,'Barbell Curl')"><div class="exercise-icon">💪</div><div class="exercise-name">Barbell Curl</div><div class="exercise-detail">3 sets × 10-12 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Hammer Curl')"><div class="exercise-icon">🔨</div><div class="exercise-name">Hammer Curl</div><div class="exercise-detail">3 sets × 12 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Skull Crushers')"><div class="exercise-icon">💀</div><div class="exercise-name">Skull Crushers</div><div class="exercise-detail">3 sets × 10-12 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Tricep Dips')"><div class="exercise-icon">💥</div><div class="exercise-name">Tricep Dips</div><div class="exercise-detail">3 sets × 12-15 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Preacher Curl')"><div class="exercise-icon">🧎</div><div class="exercise-name">Preacher Curl</div><div class="exercise-detail">3 sets × 12 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Tricep Pushdown')"><div class="exercise-icon">🔽</div><div class="exercise-name">Tricep Pushdown</div><div class="exercise-detail">3 sets × 15 reps</div></div>
+      </div>
+    </div>
+    <div id="tab-core" class="tab-content">
+      <div class="exercise-grid">
+        <div class="exercise-card" onclick="toggleExercise(this,'Plank')"><div class="exercise-icon">🧘</div><div class="exercise-name">Plank</div><div class="exercise-detail">3 sets × 60 sec</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Cable Crunches')"><div class="exercise-icon">🔁</div><div class="exercise-name">Cable Crunches</div><div class="exercise-detail">3 sets × 15-20 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Dragon Flag')"><div class="exercise-icon">🐉</div><div class="exercise-name">Dragon Flag</div><div class="exercise-detail">3 sets × 8-10 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Ab Wheel')"><div class="exercise-icon">⭕</div><div class="exercise-name">Ab Wheel Rollout</div><div class="exercise-detail">3 sets × 12 reps</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Russian Twists')"><div class="exercise-icon">🔄</div><div class="exercise-name">Russian Twists</div><div class="exercise-detail">3 sets × 20 each</div></div>
+        <div class="exercise-card" onclick="toggleExercise(this,'Hanging Leg Raise')"><div class="exercise-icon">🧗</div><div class="exercise-name">Hanging Leg Raise</div><div class="exercise-detail">3 sets × 12-15 reps</div></div>
+      </div>
+    </div>
+    <div class="workout-summary">
+      <div class="selected-count">
+        <span id="exerciseCount">0</span> exercises selected
+      </div>
+      <div id="selectedList" style="flex:1; color:var(--muted); font-size:13px; font-family:'Barlow Condensed'; letter-spacing:1px;"></div>
+      <button class="btn-primary" onclick="generatePlan()" style="white-space:nowrap;">Generate Plan</button>
+    </div>
+  </div>
+  <div id="planOutput" style="margin-top:30px; display:none;"></div>
+</section>
+
+<!-- HEIGHT POTENTIAL CALCULATOR -->
+<section id="height-calc" style="background:var(--darker); position:relative; overflow:hidden;">
+  <div style="position:absolute;right:-20px;top:50%;transform:translateY(-50%);font-family:'Bebas Neue',sans-serif;font-size:260px;color:rgba(255,255,255,0.02);pointer-events:none;line-height:1;">HEIGHT</div>
+  <div class="fade-up" style="margin-bottom:50px;">
+    <div class="section-label">Aditya's Signature Tool</div>
+    <div class="section-title">HEIGHT<br>POTENTIAL</div>
+    <p style="color:var(--muted);line-height:1.8;font-weight:300;margin-top:16px;max-width:560px;">Enter your details to estimate your natural height potential and see how much our programme can unlock. Based on bone structure, posture correction, and spinal decompression science.</p>
+  </div>
+
+  <div class="height-calc-grid fade-up">
+    <!-- Inputs -->
+    <div>
+      <div class="input-group">
+        <label>Your Current Height (cm)</label>
+        <input type="number" id="hcCurrentHeight" placeholder="168" oninput="calcHeightPotential()" style="width:100%;background:var(--gray);border:1px solid var(--light-gray);color:var(--text);padding:14px 20px;font-family:'Barlow Condensed',sans-serif;font-size:16px;outline:none;transition:border-color 0.3s;" onfocus="this.style.borderColor='var(--red)'" onblur="this.style.borderColor='var(--light-gray)'">
+      </div>
+      <div class="input-group">
+        <label>Father's Height (cm)</label>
+        <input type="number" id="hcFatherHeight" placeholder="172" oninput="calcHeightPotential()" style="width:100%;background:var(--gray);border:1px solid var(--light-gray);color:var(--text);padding:14px 20px;font-family:'Barlow Condensed',sans-serif;font-size:16px;outline:none;transition:border-color 0.3s;" onfocus="this.style.borderColor='var(--red)'" onblur="this.style.borderColor='var(--light-gray)'">
+      </div>
+      <div class="input-group">
+        <label>Mother's Height (cm)</label>
+        <input type="number" id="hcMotherHeight" placeholder="158" oninput="calcHeightPotential()" style="width:100%;background:var(--gray);border:1px solid var(--light-gray);color:var(--text);padding:14px 20px;font-family:'Barlow Condensed',sans-serif;font-size:16px;outline:none;transition:border-color 0.3s;" onfocus="this.style.borderColor='var(--red)'" onblur="this.style.borderColor='var(--light-gray)'">
+      </div>
+      <div class="input-group">
+        <label>Age</label>
+        <input type="number" id="hcAge" placeholder="22" oninput="calcHeightPotential()" style="width:100%;background:var(--gray);border:1px solid var(--light-gray);color:var(--text);padding:14px 20px;font-family:'Barlow Condensed',sans-serif;font-size:16px;outline:none;transition:border-color 0.3s;" onfocus="this.style.borderColor='var(--red)'" onblur="this.style.borderColor='var(--light-gray)'">
+      </div>
+      <div class="input-group">
+        <label>Gender</label>
+        <select id="hcGender" onchange="calcHeightPotential()" style="width:100%;background:var(--gray);border:1px solid var(--light-gray);color:var(--text);padding:14px 20px;font-family:'Barlow Condensed',sans-serif;font-size:15px;outline:none;-webkit-appearance:none;cursor:pointer;">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div id="hcResults" style="opacity:0.3;transition:opacity 0.4s;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px;">
+        <div class="height-result-box">
+          <div class="height-result-val" id="hcGenetic">—</div>
+          <div class="height-result-label">Genetic Ceiling (cm)</div>
+        </div>
+        <div class="height-result-box" style="border-color:var(--red);">
+          <div class="height-result-val" id="hcPotential" style="color:var(--orange);">—</div>
+          <div class="height-result-label">With Programme (cm)</div>
+        </div>
+      </div>
+
+      <div class="height-bars">
+        <div class="height-bar-row">
+          <div class="height-bar-label">Current</div>
+          <div class="height-bar-track"><div class="height-bar-fill" id="hcBarCurrent" style="background:#888;"></div></div>
+          <div class="height-bar-val" id="hcBarCurrentVal">—</div>
+        </div>
+        <div class="height-bar-row">
+          <div class="height-bar-label">Genetic</div>
+          <div class="height-bar-track"><div class="height-bar-fill" id="hcBarGenetic" style="background:var(--red);"></div></div>
+          <div class="height-bar-val" id="hcBarGeneticVal">—</div>
+        </div>
+        <div class="height-bar-row">
+          <div class="height-bar-label">Programme</div>
+          <div class="height-bar-track"><div class="height-bar-fill" id="hcBarPotential" style="background:var(--orange);"></div></div>
+          <div class="height-bar-val" id="hcBarPotentialVal">—</div>
+        </div>
+      </div>
+
+      <div id="hcAdvice" style="margin-top:24px;padding:20px;background:rgba(123,191,247,0.06);border-left:3px solid var(--red);color:var(--muted);font-size:13px;line-height:1.8;display:none;"></div>
+
+      <button class="btn-primary" onclick="showPage('contact'); document.querySelectorAll('.page-nav-btn').forEach(b=>b.classList.remove('active')); document.querySelector('.page-nav-btn[onclick*=contact]').classList.add('active');" style="margin-top:24px;clip-path:none;padding:16px 36px;">Book a Consultation →</button>
+    </div>
+  </div>
+</section>
+
+</div><!-- end page-tools -->
+
+<!-- PAGE: HABIT TRACKER -->
+<div class="page-section" id="page-tracker">
+<!-- HABIT TRACKER (HABITUS-style) -->
+<section id="tracker" style="background:var(--gray);padding:120px 60px;">
+  <div class="fade-up" style="margin-bottom:60px;">
+    <div class="section-label">Daily Performance Log</div>
+    <div class="section-title">HABIT<br>TRACKER</div>
+    <p style="color:var(--muted);line-height:1.8;font-weight:300;margin-top:20px;max-width:560px;">Track sleep, training, nutrition, and mood daily. Uncover patterns. Get ahead of burnout. Build the streaks that build the body.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:340px 1fr;gap:40px;align-items:start;">
+
+    <!-- Log Panel -->
+    <div style="background:var(--dark);padding:34px;border:1px solid var(--light-gray);">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--orange);margin-bottom:28px;">LOG TODAY</div>
+
+      <!-- Sleep -->
+      <div style="margin-bottom:22px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">😴 SLEEP</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:#64c8ff;" id="sleepVal">7.5 HRS</div>
+        </div>
+        <input type="range" min="3" max="12" step="0.5" value="7.5" oninput="updateTracker('sleep',this.value)" class="tracker-range" style="--c:#64c8ff;">
+      </div>
+
+      <!-- Workout -->
+      <div style="margin-bottom:22px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">🏋️ WORKOUT</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--orange);" id="workoutVal">1.0 HRS</div>
+        </div>
+        <input type="range" min="0" max="3" step="0.25" value="1" oninput="updateTracker('workout',this.value)" class="tracker-range" style="--c:var(--orange);">
+      </div>
+
+      <!-- Protein -->
+      <div style="margin-bottom:22px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">🥩 PROTEIN</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--red);" id="proteinVal">120 G</div>
+        </div>
+        <input type="range" min="0" max="300" step="5" value="120" oninput="updateTracker('protein',this.value)" class="tracker-range" style="--c:var(--red);">
+      </div>
+
+      <!-- Water -->
+      <div style="margin-bottom:22px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">💧 WATER</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:#64ffda;" id="waterVal">2.0 L</div>
+        </div>
+        <input type="range" min="0" max="5" step="0.25" value="2" oninput="updateTracker('water',this.value)" class="tracker-range" style="--c:#64ffda;">
+      </div>
+
+      <!-- Mood -->
+      <div style="margin-bottom:32px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">⚡ ENERGY</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:#ffc832;" id="energyVal">7 / 10</div>
+        </div>
+        <input type="range" min="1" max="10" step="1" value="7" oninput="updateTracker('energy',this.value)" class="tracker-range" style="--c:#ffc832;">
+      </div>
+
+      <button class="btn-primary" onclick="logDay()" style="width:100%;padding:18px;font-size:14px;clip-path:none;">LOG TODAY'S DATA</button>
+      <div id="logMsg" style="display:none;text-align:center;margin-top:14px;font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);">✓ LOGGED</div>
+    </div>
+
+    <!-- Right Panel: Stats + Log Table -->
+    <div style="display:flex;flex-direction:column;gap:24px;">
+
+      <!-- Avg Stats Row -->
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:2px;" id="trackerStats">
+        <div class="tracker-stat-box" style="--bc:#64c8ff;"><div class="tsb-val" id="avgSleep">—</div><div class="tsb-lbl">AVG SLEEP</div><div class="tsb-unit">hrs/night</div></div>
+        <div class="tracker-stat-box" style="--bc:var(--orange);"><div class="tsb-val" id="avgWorkout">—</div><div class="tsb-lbl">AVG WORKOUT</div><div class="tsb-unit">hrs/day</div></div>
+        <div class="tracker-stat-box" style="--bc:var(--red);"><div class="tsb-val" id="avgProtein">—</div><div class="tsb-lbl">AVG PROTEIN</div><div class="tsb-unit">g / day</div></div>
+        <div class="tracker-stat-box" style="--bc:#64ffda;"><div class="tsb-val" id="avgWater">—</div><div class="tsb-lbl">AVG WATER</div><div class="tsb-unit">L / day</div></div>
+        <div class="tracker-stat-box" style="--bc:#ffc832;"><div class="tsb-val" id="avgEnergy">—</div><div class="tsb-lbl">AVG ENERGY</div><div class="tsb-unit">out of 10</div></div>
+      </div>
+
+      <!-- Streaks -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;">
+        <div style="background:var(--dark);padding:24px;display:flex;align-items:center;gap:20px;">
+          <div style="font-size:36px;">🔥</div>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--orange);line-height:1;" id="streakWorkout">0</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);">Day Workout Streak</div>
+          </div>
+        </div>
+        <div style="background:var(--dark);padding:24px;display:flex;align-items:center;gap:20px;">
+          <div style="font-size:36px;">🥗</div>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--red);line-height:1;" id="streakProtein">0</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);">Day Protein Goal Streak</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pattern Insight -->
+      <div id="trackerInsight" style="display:none;background:var(--dark);padding:24px;border-left:3px solid var(--orange);">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:10px;">📊 Pattern Insight</div>
+        <div id="insightText" style="color:var(--muted);font-size:14px;line-height:1.7;"></div>
+      </div>
+
+      <!-- Recent Log Table -->
+      <div style="background:var(--dark);border:1px solid var(--light-gray);overflow:hidden;">
+        <div style="padding:20px 24px;border-bottom:1px solid var(--light-gray);font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--orange);">Recent Logs</div>
+        <div id="trackerTable">
+          <table style="width:100%;border-collapse:collapse;">
+            <thead>
+              <tr style="background:rgba(255,255,255,0.02);">
+                <th style="text-align:left;padding:12px 24px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);">Date</th>
+                <th style="padding:12px 16px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#64c8ff;text-align:center;">Sleep</th>
+                <th style="padding:12px 16px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);text-align:center;">Workout</th>
+                <th style="padding:12px 16px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--red);text-align:center;">Protein</th>
+                <th style="padding:12px 16px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#64ffda;text-align:center;">Water</th>
+                <th style="padding:12px 16px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#ffc832;text-align:center;">Energy</th>
+              </tr>
+            </thead>
+            <tbody id="logBody">
+              <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;">No data yet — log your first day above</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- end page-tracker -->
+
+<!-- PAGE: RESULTS -->
+<div class="page-section" id="page-results">
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-label fade-up">Client Results</div>
+  <div class="section-title fade-up">SUCCESS<br>STORIES</div>
+  <div style="overflow:hidden; margin-top:50px;">
+    <div class="testimonials-track" id="testimonialsTrack">
+      <div class="testimonial-card">
+        <div class="quote-mark">"</div>
+        <p class="testimonial-text">I always thought my height was fixed — Aditya proved me completely wrong. After 6 months of his spinal decompression and stretching program, I gained 2.5 inches. My posture transformed and I feel taller and more confident than ever.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">👨</div>
+          <div>
+            <div class="author-name">James Okafor</div>
+            <div class="author-result">+34kg muscle · -22kg fat</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="quote-mark">"</div>
+        <p class="testimonial-text">At 22 I thought I had stopped growing. Aditya's growth axis training and daily posture correction routine added 1.8 inches in 4 months. My chronic back pain disappeared too — completely life-changing.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">👩</div>
+          <div>
+            <div class="author-name">Priya Nair</div>
+            <div class="author-result">Marathon PR: 3:28 → 3:06</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="quote-mark">"</div>
+        <p class="testimonial-text">Three different physios, zero results for my slouched posture. Eight weeks with Aditya and I stand 2 inches taller, my shoulders are back, and people keep asking what changed. The program is scientific, precise, and it works.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">🧑</div>
+          <div>
+            <div class="author-name">Ryan Castellano</div>
+            <div class="author-result">Body fat: 28% → 11%</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="quote-mark">"</div>
+        <p class="testimonial-text">I came to Aditya at 19 wanting to maximise my growth potential before my plates closed. His structured protocol helped me gain 3 full inches over 8 months. I'm now the tallest in my family — something I never imagined possible.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">👩</div>
+          <div>
+            <div class="author-name">Aisha Okonkwo</div>
+            <div class="author-result">National Masters Champion</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="testimonial-controls fade-up">
+    <button class="t-btn" onclick="slideTestimonials(-1)">←</button>
+    <button class="t-btn" onclick="slideTestimonials(1)">→</button>
+  </div>
+</section>
+
+</div><!-- end page-results -->
+
+<!-- PAGE: CONTACT -->
+<div class="page-section" id="page-contact">
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-info fade-up">
+    <div class="section-label">Get Started</div>
+    <div class="section-title">READY TO<br>BEGIN?</div>
+    <p style="color:var(--muted); margin:20px 0 50px; line-height:1.8; font-weight:300;">
+      The first step is the hardest. Everything after that is just showing up.
+      Reach out and let's build something that actually lasts.
+    </p>
+    <div class="contact-item">
+      <div class="contact-icon">📍</div>
+      <div>
+        <div class="contact-detail">Location</div>
+        <div class="contact-value">ApexForge Gym, 240 Industrial Ave, NYC</div>
+      </div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-icon">📞</div>
+      <div>
+        <div class="contact-detail">Phone</div>
+        <div class="contact-value">+1 (212) 555-0182</div>
+      </div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-icon">✉️</div>
+      <div>
+        <div class="contact-detail">Email</div>
+        <div class="contact-value"><a href="mailto:coach@apexforge.in" style="color:inherit;text-decoration:none;">coach@apexforge.in</a></div>
+      </div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-icon">🕐</div>
+      <div>
+        <div class="contact-detail">Hours</div>
+        <div class="contact-value">Mon–Sat: 5AM – 10PM</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact-form fade-up">
+    <div class="form-row">
+      <div class="form-group">
+        <input type="text" placeholder="First Name">
+      </div>
+      <div class="form-group">
+        <input type="text" placeholder="Last Name">
+      </div>
+    </div>
+    <div class="form-group">
+      <input type="email" placeholder="Email Address">
+    </div>
+    <div class="form-group">
+      <input type="text" placeholder="Your Primary Goal">
+    </div>
+    <div class="form-group">
+      <textarea placeholder="Tell me about yourself — current fitness level, schedule, and what you've tried before..."></textarea>
+    </div>
+    <button class="btn-primary" onclick="handleSubmit()" style="font-size:14px; padding:18px 50px;">
+      Send Message →
+    </button>
+    <div id="formSuccess" style="display:none; margin-top:20px; color:var(--orange); font-family:'Barlow Condensed'; letter-spacing:2px; font-size:13px; text-transform:uppercase;">
+      ✓ Message sent. Expect a response within 24 hours.
+    </div>
+  </div>
+</section>
+
+</div><!-- end page-contact -->
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="logo">APEX<span>FORGE</span></a>
+  <div class="footer-text">© 2026 APEXFORGE. ALL RIGHTS RESERVED.</div>
+  <div style="display:flex; gap:24px;">
+    <div style="font-size:20px; cursor:pointer">📸</div>
+    <div style="font-size:20px; cursor:pointer">🐦</div>
+    <div style="font-size:20px; cursor:pointer">▶️</div>
+  </div>
+</footer>
+
+<script>
+  // ====== PAGE NAVIGATION ======
+  function showPage(pageId, btn) {
+    document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + pageId);
+    if (target) target.classList.add('active');
+    document.querySelectorAll('.page-nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) {
+      btn.classList.add('active');
+    } else {
+      // Find matching btn by onclick attribute
+      document.querySelectorAll('.page-nav-btn').forEach(b => {
+        if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + pageId + "'")) b.classList.add('active');
+      });
+    }
+    document.getElementById('pageNavWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    target && target.querySelectorAll('.fade-up').forEach((el, i) => {
+      el.classList.remove('visible');
+      setTimeout(() => el.classList.add('visible'), i * 80 + 100);
+    });
+  }
+
+  // ====== CURSOR ======
+  const cursor = document.getElementById('cursor');
+  const follower = document.getElementById('cursorFollower');
+  let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    cursor.style.transform = `translate(${mouseX - 6}px, ${mouseY - 6}px)`;
+  });
+  function animateFollower() {
+    followerX += (mouseX - followerX) * 0.12;
+    followerY += (mouseY - followerY) * 0.12;
+    follower.style.transform = `translate(${followerX - 18}px, ${followerY - 18}px)`;
+    requestAnimationFrame(animateFollower);
+  }
+  animateFollower();
+  document.querySelectorAll('[onclick], button, a').forEach(el => {
+    el.addEventListener('mouseenter', () => { follower.style.width = '60px'; follower.style.height = '60px'; });
+    el.addEventListener('mouseleave', () => { follower.style.width = '36px'; follower.style.height = '36px'; });
+  });
+
+  // ====== COUNTER ANIMATION ======
+  function animateCounters() {
+    document.querySelectorAll('[data-target]').forEach(el => {
+      const target = +el.getAttribute('data-target');
+      let current = 0;
+      const step = target / 60;
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = Math.floor(current);
+        if (current >= target) clearInterval(timer);
+      }, 20);
+    });
+  }
+  setTimeout(animateCounters, 500);
+
+  // ====== FADE ANIMATIONS ======
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) setTimeout(() => entry.target.classList.add('visible'), i * 100);
+    });
+  }, { threshold: 0.05 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  // Trigger visible page on load
+  setTimeout(() => document.querySelectorAll('#page-trainers .fade-up').forEach((el, i) => {
+    setTimeout(() => el.classList.add('visible'), i * 80 + 200);
+  }), 100);
+
+  // ====== MODAL SYSTEM ======
+  const programData = [
+    {
+      label: 'Height Programme 01', title: 'SPINAL ELONGATION\nPROTOCOL',
+      meta: [['5×','/ Week'],['16','Weeks'],['All Ages','Level']],
+      desc: 'Our flagship spinal decompression and elongation programme. Daily traction stretches, inversion therapy, and targeted spinal mobilisation work together to create measurable vertebral spacing — unlocking 1–3cm of height in the first 8 weeks alone.',
+      extra: 'Includes: Daily routine guide · Weekly coach check-in · Nutrition support for bone density · Progress measurement kit'
+    },
+    {
+      label: 'Height Programme 02', title: 'POSTURE\nCORRECTION',
+      meta: [['4×','/ Week'],['12','Weeks'],['Beginner','Level']],
+      desc: 'Chronic forward head posture, rounded shoulders, and anterior pelvic tilt can steal 2–4 inches from your visible height. This programme systematically corrects every postural deviation through targeted corrective exercise and mobility work.',
+      extra: 'Includes: Full postural assessment · Corrective exercise library · Ergonomic lifestyle guide · Before/after measurement tracking'
+    },
+    {
+      label: 'Height Programme 03', title: 'GROWTH AXIS\nTRAINING',
+      meta: [['6×','/ Week'],['20','Weeks'],['Intermediate','Level']],
+      desc: 'For clients under 25 still within growth window — our Growth Axis Training maximises natural growth hormone release through specific exercise timing, sleep optimisation, and nutritional protocols proven to stimulate growth plate activity.',
+      extra: 'Includes: HGH-optimised training schedule · Sleep protocol · Bone-density nutrition plan · Monthly height tracking'
+    },
+    {
+      label: 'Height Programme 04', title: 'BODY RECOMP\nHEIGHT BOOST',
+      meta: [['4×','/ Week'],['24','Weeks'],['Intermediate','Level']],
+      desc: 'Excess weight compresses the spine and rounds posture — costing you visible height. This combined recomposition and height programme sheds fat, builds a strong posture-support musculature, and decompresses the spine simultaneously.',
+      extra: 'Includes: Macro nutrition plan · Body composition tracking · Spinal load management · Bi-weekly coach review'
+    },
+    {
+      label: 'Height Programme 05', title: 'FOUNDATION\nPROGRAMME',
+      meta: [['3×','/ Week'],['8','Weeks'],['Beginner','Level']],
+      desc: 'The perfect entry point. Learn the fundamentals of spinal health, postural alignment, and daily habits that make every future programme more effective. Ideal for anyone starting their height enhancement journey from scratch.',
+      extra: 'Includes: Beginner movement library · Habit tracking sheet · Daily stretch routine · Email support'
+    },
+    {
+      label: 'Premium', title: 'CUSTOM\n1-ON-1 COACHING',
+      meta: [['Custom','Schedule'],['Ongoing','Duration'],['All Levels','Level']],
+      desc: 'Fully bespoke coaching with Aditya himself. Every session is designed around your unique spinal structure, postural profile, and height goals. Weekly programme updates, direct WhatsApp access, form video reviews, and nutritional guidance included.',
+      extra: 'Includes: Full body assessment · Custom programme · Weekly video check-in · WhatsApp support · Unlimited programme revisions'
+    }
+  ];
+
+  const teamData = [
+    {
+      label: 'Head Specialist', name: 'ADITYA GAIKWAD', emoji: '📏',
+      specialty: 'Height Enhancement & Postural Correction',
+      certs: 'Spinal Decompression · Growth Axis Training · Sports Physio',
+      bio: "India's leading height specialist. Combines spinal elongation, posture correction, and growth stimulation protocols to deliver 1–4 inch gains. 12 years of experience, 800+ clients transformed.",
+      tags: ['Height Gain', 'Spinal Decompression', 'Posture Fix', 'Growth Axis']
+    },
+    {
+      label: 'HIIT & Conditioning', name: 'SANSKAR DHOBE', emoji: '🥊',
+      specialty: 'HIIT & Combat Conditioning',
+      certs: 'ACE-CPT · Boxing Coach · TRX Specialist',
+      bio: 'Former national-level boxer with 8 years in high-performance conditioning. Merges combat athletics with metabolic training. Specialises in fat loss protocols that support height-optimising body recomposition.',
+      tags: ['HIIT', 'Fat Loss', 'Combat Fitness', 'Metabolic Training']
+    },
+    {
+      label: 'Mobility & Recovery', name: 'NITESH PATIL', emoji: '🧘',
+      specialty: 'Mobility & Recovery',
+      certs: 'NASM-CES · FMS L2 · Yoga RYT-500',
+      bio: 'Corrective exercise expert who rebuilds structural integrity and eliminates chronic pain. Nitesh specialises in the deep mobility work that underpins every height gain — flexible fascia, mobile joints, and decompressed discs.',
+      tags: ['Mobility', 'Rehab', 'Corrective Exercise', 'Yoga']
+    },
+    {
+      label: 'Sports Nutrition', name: 'PARTH ASATI', emoji: '🍽️',
+      specialty: 'Sports Nutrition & Dietetics',
+      certs: 'RD · CSSD · Precision Nutrition L2',
+      bio: 'Registered dietitian and performance nutrition specialist. Builds science-backed meal protocols that support bone density, HGH production, and optimal recovery — the nutritional foundation every height programme requires.',
+      tags: ['Meal Plans', 'Bone Density Nutrition', 'Macros', 'HGH Support']
+    },
+    {
+      label: 'Athletic Performance', name: 'SHIVAM HANDE', emoji: '⚡',
+      specialty: 'Athletic Performance & Speed',
+      certs: 'NSCA-CSCS · Speed Coach · Sports Therapist',
+      bio: 'Speed and explosiveness specialist. Works alongside Aditya to build the athletic base that supports height-optimising training — strong glutes, mobile hips, and a spine that handles load without compression.',
+      tags: ['Explosiveness', 'Speed', 'Athletic Base', 'Load Management']
+    }
+  ];
+
+  function openProgramModal(idx) {
+    const d = programData[idx];
+    document.getElementById('modalLabel').textContent = d.label;
+    document.getElementById('modalTitle').textContent = d.title;
+    document.getElementById('modalMeta').innerHTML = d.meta.map(([v,l]) =>
+      `<div class="modal-meta-item"><span>${v}</span> ${l}</div>`).join('');
+    document.getElementById('modalDesc').textContent = d.desc;
+    document.getElementById('modalExtra').innerHTML = `<p style="color:var(--muted);font-size:13px;line-height:1.8;padding:16px;background:rgba(123,191,247,0.06);border-left:3px solid var(--red);margin-bottom:24px;">${d.extra}</p>`;
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function openTeamModal(idx) {
+    const d = teamData[idx];
+    document.getElementById('modalLabel').textContent = d.label;
+    document.getElementById('modalTitle').textContent = d.name;
+    document.getElementById('modalMeta').innerHTML = `<div class="modal-meta-item" style="color:var(--orange);letter-spacing:2px;">${d.specialty}</div>`;
+    document.getElementById('modalDesc').innerHTML = `<p style="margin-bottom:10px;">${d.bio}</p><p style="color:var(--muted);font-size:12px;letter-spacing:1px;">${d.certs}</p>`;
+    document.getElementById('modalExtra').innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;">${d.tags.map(t=>`<span style="border:1px solid var(--light-gray);padding:6px 14px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);">${t}</span>`).join('')}</div>`;
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal(e) {
+    if (e === true || e.target === document.getElementById('modalOverlay')) {
+      document.getElementById('modalOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+
+  function modalEnquire() {
+    closeModal(true);
+    showPage('contact');
+    document.querySelectorAll('.page-nav-btn').forEach(b => b.classList.remove('active'));
+    const btn = [...document.querySelectorAll('.page-nav-btn')].find(b => b.textContent.includes('Contact'));
+    if (btn) btn.classList.add('active');
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(true); });
+
+  // ====== MACRO CALCULATOR ======
+  function calcMacros() {
+    const w = parseFloat(document.getElementById('macroWeight').value);
+    if (!w) {
+      ['macroCalories','macroProtein','macroCarbs','macroFat'].forEach(id => document.getElementById(id).textContent = '—');
+      document.getElementById('macroNote').style.display = 'none';
+      return;
+    }
+    const goal = document.getElementById('macroGoal').value;
+    const activity = parseFloat(document.getElementById('macroActivity').value);
+    const bmr = w * 22;
+    let tdee = bmr * activity;
+    let adj = goal === 'cut' ? -500 : goal === 'bulk' ? 300 : 0;
+    const kcal = Math.round(tdee + adj);
+    const protein = Math.round(goal === 'cut' ? w * 2.4 : goal === 'bulk' ? w * 2.2 : w * 2.6);
+    const fat = Math.round(goal === 'cut' ? w * 0.8 : goal === 'bulk' ? w * 1.0 : w * 0.9);
+    const carbCal = kcal - (protein * 4) - (fat * 9);
+    const carbs = Math.max(0, Math.round(carbCal / 4));
+    document.getElementById('macroCalories').textContent = kcal;
+    document.getElementById('macroProtein').textContent = protein;
+    document.getElementById('macroCarbs').textContent = carbs;
+    document.getElementById('macroFat').textContent = fat;
+    const notes = {
+      cut: '🔥 Cut phase: Prioritise protein to preserve muscle. Eat most carbs around training. Track weekly — adjust if loss stalls for 2+ weeks.',
+      maintain: '⚖️ Maintenance: Focus on food quality and consistency. This is your baseline — perfect for body recomposition when paired with progressive training.',
+      bulk: '💪 Lean bulk: Aim for 0.25–0.5 kg/week weight gain. If gaining faster, reduce carbs by 50g. Re-assess macros every 4 weeks as weight changes.'
+    };
+    const noteEl = document.getElementById('macroNote');
+    noteEl.textContent = notes[goal];
+    noteEl.style.display = 'block';
+  }
+
+  // ====== HABIT TRACKER ======
+  const trackerData = [];
+  const trackerState = { sleep: 7.5, workout: 1.0, protein: 120, water: 2.0, energy: 7 };
+
+  function updateTracker(key, val) {
+    trackerState[key] = parseFloat(val);
+    const labels = { sleep: v => v + ' HRS', workout: v => v + ' HRS', protein: v => v + ' G', water: v => v + ' L', energy: v => v + ' / 10' };
+    const ids = { sleep: 'sleepVal', workout: 'workoutVal', protein: 'proteinVal', water: 'waterVal', energy: 'energyVal' };
+    document.getElementById(ids[key]).textContent = labels[key](val);
+  }
+
+  function logDay() {
+    const today = new Date().toISOString().slice(0, 10);
+    const existing = trackerData.findIndex(d => d.date === today);
+    const entry = { date: today, ...trackerState };
+    if (existing >= 0) trackerData[existing] = entry; else trackerData.unshift(entry);
+    renderTracker();
+    const msg = document.getElementById('logMsg');
+    msg.style.display = 'block';
+    setTimeout(() => msg.style.display = 'none', 2000);
+  }
+
+  function renderTracker() {
+    if (!trackerData.length) return;
+    const avg = k => (trackerData.reduce((s, d) => s + d[k], 0) / trackerData.length).toFixed(1);
+    document.getElementById('avgSleep').textContent = avg('sleep');
+    document.getElementById('avgWorkout').textContent = avg('workout');
+    document.getElementById('avgProtein').textContent = Math.round(trackerData.reduce((s, d) => s + d.protein, 0) / trackerData.length);
+    document.getElementById('avgWater').textContent = avg('water');
+    document.getElementById('avgEnergy').textContent = avg('energy');
+    let ws = 0, ps = 0;
+    for (const d of trackerData) { if (d.workout >= 0.5) ws++; else break; }
+    for (const d of trackerData) { if (d.protein >= 100) ps++; else break; }
+    document.getElementById('streakWorkout').textContent = ws;
+    document.getElementById('streakProtein').textContent = ps;
+    const sleepAvg = parseFloat(avg('sleep'));
+    const insight = document.getElementById('trackerInsight');
+    const insightText = document.getElementById('insightText');
+    if (trackerData.length >= 3) {
+      insight.style.display = 'block';
+      if (sleepAvg < 7) insightText.textContent = `Your average sleep is ${sleepAvg}h — below the 7–9h optimal range. Low sleep reduces HGH production by up to 70%. Prioritise 8–9h for maximum height gains.`;
+      else if (parseFloat(avg('energy')) < 5) insightText.textContent = `Low energy scores detected (avg ${avg('energy')}/10). Check calorie intake — under-fuelling training suppresses growth hormone. Boost carbs on training days.`;
+      else insightText.textContent = `Strong consistency over ${trackerData.length} days tracked. Sleep avg ${sleepAvg}h · Energy avg ${avg('energy')}/10. Keep this up — spinal decompression gains require consistent daily effort.`;
+    }
+    const tbody = document.getElementById('logBody');
+    tbody.innerHTML = trackerData.slice(0, 7).map(d => `
+      <tr style="border-top:1px solid var(--light-gray);">
+        <td style="padding:14px 24px;font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;color:var(--muted);">${d.date}</td>
+        <td style="padding:14px 16px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:18px;color:#64c8ff;">${d.sleep}h</td>
+        <td style="padding:14px 16px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--orange);">${d.workout}h</td>
+        <td style="padding:14px 16px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--red);">${d.protein}g</td>
+        <td style="padding:14px 16px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:18px;color:#64ffda;">${d.water}L</td>
+        <td style="padding:14px 16px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:18px;color:#ffc832;">${d.energy}/10</td>
+      </tr>`).join('');
+  }
+
+  (function seedTracker() {
+    const base = new Date();
+    const demo = [
+      {sleep:8.5,workout:1.5,protein:160,water:3.0,energy:8},
+      {sleep:7.2,workout:1.0,protein:145,water:2.5,energy:7},
+      {sleep:6.8,workout:0.8,protein:130,water:2.0,energy:6},
+      {sleep:9.0,workout:2.0,protein:175,water:3.5,energy:9},
+      {sleep:5.5,workout:0.5,protein:90,water:1.5,energy:4},
+      {sleep:7.5,workout:1.2,protein:150,water:2.8,energy:7},
+      {sleep:8.0,workout:1.5,protein:165,water:3.2,energy:8},
+    ];
+    demo.forEach((d, i) => {
+      const date = new Date(base); date.setDate(date.getDate() - i);
+      trackerData.push({date: date.toISOString().slice(0,10), ...d});
+    });
+    renderTracker();
+  })();
+
+  // ====== BMI CALCULATOR ======
+  let unit = 'metric';
+
+  function setUnit(u) {
+    unit = u;
+    document.querySelectorAll('.toggle-btn').forEach((b, i) => {
+      b.classList.toggle('active', (i === 0 && u === 'metric') || (i === 1 && u === 'imperial'));
+    });
+    const h = document.getElementById('height');
+    const h2 = document.getElementById('height2');
+    if (u === 'imperial') {
+      h2.style.display = 'block';
+      h.placeholder = 'feet'; h2.placeholder = 'inches';
+    } else {
+      h.placeholder = '175 (cm)'; h2.style.display = 'none';
+    }
+    calcBMI();
+  }
+
+  function calcBMI() {
+    let w = parseFloat(document.getElementById('weight').value);
+    let h = parseFloat(document.getElementById('height').value);
+    let h2 = parseFloat(document.getElementById('height2').value) || 0;
+    if (!w || !h) { resetBMI(); return; }
+    let bmi;
+    if (unit === 'metric') {
+      const hm = h / 100; bmi = w / (hm * hm);
+    } else {
+      const totalInches = (h * 12) + h2; bmi = (w / (totalInches * totalInches)) * 703;
+    }
+    bmi = Math.round(bmi * 10) / 10;
+    document.getElementById('bmiValue').textContent = bmi;
+    const categories = [
+      { max: 18.5, label: 'Underweight',    color: '#64a0ff', scale: 's1', advice: 'Your BMI suggests you may be underweight. Building lean mass through structured nutrition and training will support bone density and height goals.' },
+      { max: 25,   label: 'Normal Weight',  color: '#64c864', scale: 's2', advice: 'Your BMI is in the healthy range. Focus on posture correction and spinal decompression — you are in the ideal position to maximise height gains.' },
+      { max: 30,   label: 'Overweight',     color: '#ffc832', scale: 's3', advice: 'Excess weight compresses the spine, reducing visible height. A recomposition protocol combined with spinal decompression will deliver dual results.' },
+      { max: 35,   label: 'Obese Class I',  color: '#FFAA78', scale: 's4', advice: 'Spinal compression at this BMI can reduce your visible height significantly. Our combined recomp + height programme addresses both simultaneously.' },
+      { max: 999,  label: 'Obese Class II', color: '#7BBFF7', scale: 's5', advice: 'Working with both a trainer and dietitian is recommended. Spinal load reduction through weight management will have a substantial impact on your visible height.' }
+    ];
+    const cat = categories.find(c => bmi < c.max);
+    document.getElementById('bmiCat').textContent = cat.label;
+    document.getElementById('bmiValue').style.color = cat.color;
+    document.getElementById('bmiCircle').style.borderColor = cat.color;
+    document.getElementById('bmiAdvice').textContent = cat.advice;
+    ['s1','s2','s3','s4','s5'].forEach(id => document.getElementById(id).classList.remove('active'));
+    document.getElementById(cat.scale).classList.add('active');
+  }
+
+  function resetBMI() {
+    document.getElementById('bmiValue').textContent = '—';
+    document.getElementById('bmiCat').textContent = 'Enter your details';
+    document.getElementById('bmiAdvice').textContent = '';
+    document.getElementById('bmiCircle').style.borderColor = 'var(--light-gray)';
+    ['s1','s2','s3','s4','s5'].forEach(id => document.getElementById(id).classList.remove('active'));
+  }
+
+  // ====== HEIGHT POTENTIAL CALCULATOR ======
+  function calcHeightPotential() {
+    const current = parseFloat(document.getElementById('hcCurrentHeight').value);
+    const father = parseFloat(document.getElementById('hcFatherHeight').value);
+    const mother = parseFloat(document.getElementById('hcMotherHeight').value);
+    const age    = parseFloat(document.getElementById('hcAge').value);
+    const gender = document.getElementById('hcGender').value;
+    const resultsBox = document.getElementById('hcResults');
+
+    if (!current || !father || !mother || !age) {
+      resultsBox.style.opacity = '0.3';
+      return;
+    }
+    resultsBox.style.opacity = '1';
+
+    // Mid-parental height (genetic ceiling)
+    let genetic = gender === 'male'
+      ? ((father + mother + 13) / 2)
+      : ((father + mother - 13) / 2);
+    genetic = Math.round(genetic * 10) / 10;
+
+    // Programme potential: posture + decompression gains
+    // Age factor: under 20 more gain possible, over 35 less
+    let gainFactor = age < 18 ? 5.0 : age < 22 ? 4.0 : age < 28 ? 3.0 : age < 35 ? 2.5 : 1.5;
+    // If already near genetic ceiling, reduce gain
+    const gap = Math.max(0, genetic - current);
+    const postureGain = Math.min(gap * 0.6 + gainFactor * 0.4, gainFactor);
+    const potential = Math.round((current + postureGain) * 10) / 10;
+
+    document.getElementById('hcGenetic').textContent = genetic;
+    document.getElementById('hcPotential').textContent = potential;
+
+    // Bars — normalise to max possible
+    const maxH = Math.max(potential, genetic, current) + 5;
+    const minH = Math.min(current) - 5;
+    const range = maxH - minH;
+
+    const pct = v => Math.round(((v - minH) / range) * 100);
+    document.getElementById('hcBarCurrent').style.width = pct(current) + '%';
+    document.getElementById('hcBarGenetic').style.width = pct(genetic) + '%';
+    document.getElementById('hcBarPotential').style.width = pct(potential) + '%';
+    document.getElementById('hcBarCurrentVal').textContent = current;
+    document.getElementById('hcBarGeneticVal').textContent = genetic;
+    document.getElementById('hcBarPotentialVal').textContent = potential;
+
+    const gained = Math.round((potential - current) * 10) / 10;
+    const advice = document.getElementById('hcAdvice');
+    advice.style.display = 'block';
+    if (age < 20) {
+      advice.innerHTML = `🌱 <strong style="color:var(--text);">Growth Window Active.</strong> At ${age} years old you still have active growth plates. Our Growth Axis Training can maximise your remaining natural growth AND correct posture — potentially adding up to <strong style="color:var(--orange);">+${gained}cm</strong> to your current height.`;
+    } else if (gained >= 3) {
+      advice.innerHTML = `📏 <strong style="color:var(--text);">High Potential Detected.</strong> Our spinal decompression and posture correction protocol estimates a gain of up to <strong style="color:var(--orange);">+${gained}cm</strong> — primarily through vertebral spacing and eliminating postural height loss. Most clients see visible results within 6–8 weeks.`;
+    } else {
+      advice.innerHTML = `📐 <strong style="color:var(--text);">Achievable Gains.</strong> An estimated <strong style="color:var(--orange);">+${gained}cm</strong> is achievable through daily spinal decompression, posture realignment, and targeted flexibility work. Even 1–2cm can dramatically change how tall you appear and how you carry yourself.`;
+    }
+  }
+
+  // ====== WORKOUT BUILDER ======
+  const selected = new Set();
+
+  function showTab(name, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    if (btn) btn.classList.add('active');
+  }
+
+  function toggleExercise(card, name) {
+    if (card.classList.contains('selected')) {
+      card.classList.remove('selected'); selected.delete(name);
+    } else {
+      card.classList.add('selected'); selected.add(name);
+    }
+    document.getElementById('exerciseCount').textContent = selected.size;
+    document.getElementById('selectedList').textContent = [...selected].join(' · ');
+  }
+
+  function generatePlan() {
+    if (selected.size === 0) {
+      const summary = document.querySelector('.workout-summary');
+      summary.style.borderColor = '#7BBFF7';
+      setTimeout(() => summary.style.borderColor = '', 1500);
+      document.getElementById('selectedList').textContent = '⚠ Please select at least one exercise first!';
+      document.getElementById('selectedList').style.color = '#7BBFF7';
+      setTimeout(() => { document.getElementById('selectedList').textContent = ''; document.getElementById('selectedList').style.color = ''; }, 2000);
+      return;
+    }
+    const output = document.getElementById('planOutput');
+    const exercises = [...selected];
+    const rows = exercises.map((ex, i) => `
+      <div style="background:#1A1A1A;padding:20px;border-left:3px solid #7BBFF7;display:flex;flex-direction:column;gap:6px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;color:#7BBFF7;text-transform:uppercase;">Exercise ${i+1}</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#FFF3B0;">${ex}</div>
+        <div style="color:#888;font-size:13px;">3–4 sets &nbsp;·&nbsp; 8–15 reps &nbsp;·&nbsp; 90 sec rest</div>
+      </div>`).join('');
+    output.innerHTML = `
+      <div style="background:#0A0A0A;padding:40px;border:1px solid #2A2A2A;color:#FFF3B0;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:3px;color:#7BBFF7;margin-bottom:6px;">YOUR WORKOUT PLAN</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#888;margin-bottom:30px;">${exercises.length} EXERCISES &nbsp;·&nbsp; EST. ${exercises.length * 8}–${exercises.length * 10} MINUTES</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;">${rows}</div>
+        <div style="margin-top:28px;padding:20px;background:rgba(123,191,247,0.07);border:1px solid rgba(123,191,247,0.25);color:#888;font-size:14px;line-height:1.8;">
+          💡 <strong style="color:#FFF3B0;">Coach's Note:</strong> Always warm up 5–10 min before starting. Prioritise form over weight. Log each session to track progressive overload.
+        </div>
+        <div style="display:flex;gap:12px;margin-top:20px;">
+          <button onclick="clearPlan()" style="background:none;border:1px solid #2A2A2A;color:#888;padding:12px 28px;font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;">✕ Clear Plan</button>
+          <button onclick="showPage('contact');document.querySelectorAll('.page-nav-btn').forEach(b=>b.classList.remove('active'));document.querySelector('.page-nav-btn[onclick*=contact]').classList.add('active');" style="background:var(--red);border:none;color:#0A0A0A;padding:12px 28px;font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;font-weight:700;">Book This Programme →</button>
+        </div>
+      </div>`;
+    output.style.display = 'block';
+    output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function clearPlan() {
+    const output = document.getElementById('planOutput');
+    output.style.display = 'none';
+    output.innerHTML = '';
+    selected.clear();
+    document.querySelectorAll('.exercise-card.selected').forEach(c => c.classList.remove('selected'));
+    document.getElementById('exerciseCount').textContent = '0';
+    document.getElementById('selectedList').textContent = '';
+  }
+
+  // ====== TESTIMONIALS SLIDER (fixed for hidden sections) ======
+  let testimonialIndex = 0;
+  function slideTestimonials(dir) {
+    const track = document.getElementById('testimonialsTrack');
+    const cards = track.querySelectorAll('.testimonial-card');
+    const max = Math.max(0, cards.length - 1);
+    testimonialIndex = Math.max(0, Math.min(testimonialIndex + dir, max));
+    // Use actual measured width when visible
+    const cardEl = cards[0];
+    const w = cardEl.getBoundingClientRect().width || parseInt(getComputedStyle(cardEl).minWidth) || 380;
+    track.style.transform = `translateX(-${testimonialIndex * (w + 30)}px)`;
+    // Update dots
+    document.querySelectorAll('.t-dot').forEach((d, i) => d.classList.toggle('active', i === testimonialIndex));
+  }
+
+  // Add dots to testimonials when results page is opened
+  function initTestimonialDots() {
+    const controls = document.querySelector('.testimonial-controls');
+    if (!controls || controls.querySelector('.t-dot')) return;
+    const track = document.getElementById('testimonialsTrack');
+    const count = track.querySelectorAll('.testimonial-card').length;
+    const dotsWrap = document.createElement('div');
+    dotsWrap.style.cssText = 'display:flex;gap:8px;align-items:center;';
+    for (let i = 0; i < count; i++) {
+      const dot = document.createElement('button');
+      dot.className = 't-dot';
+      dot.style.cssText = `width:8px;height:8px;border-radius:50%;border:none;cursor:pointer;transition:all 0.3s;background:${i===0?'var(--red)':'var(--light-gray)'};padding:0;`;
+      dot.onclick = () => { testimonialIndex = i - 1; slideTestimonials(1); };
+      dotsWrap.appendChild(dot);
+    }
+    controls.appendChild(dotsWrap);
+    // Add dot active style
+    const style = document.createElement('style');
+    style.textContent = '.t-dot.active{background:var(--red) !important;transform:scale(1.3);}';
+    document.head.appendChild(style);
+    document.querySelector('.t-dot')?.classList.add('active');
+  }
+
+  // Patch showPage to init testimonial dots when results page opens
+  const _origShowPage = showPage;
+  window.showPage = function(pageId, btn) {
+    _origShowPage(pageId, btn);
+    if (pageId === 'results') setTimeout(initTestimonialDots, 150);
+    if (pageId === 'nutrition') calcMacros();
+  };
+
+  // ====== CONTACT FORM ======
+  function handleSubmit() {
+    const inputs = document.querySelectorAll('#contact input, #contact textarea');
+    let allFilled = true;
+    inputs.forEach(inp => {
+      if (!inp.value.trim()) {
+        allFilled = false;
+        inp.style.borderBottomColor = '#7BBFF7';
+        setTimeout(() => inp.style.borderBottomColor = '', 2000);
+      }
+    });
+    if (!allFilled) return;
+    const btn = document.querySelector('#page-contact .btn-primary');
+    const original = btn.textContent;
+    btn.textContent = 'Sending...';
+    btn.style.opacity = '0.7';
+    btn.disabled = true;
+    setTimeout(() => {
+      inputs.forEach(inp => inp.value = '');
+      btn.textContent = original;
+      btn.style.opacity = '';
+      btn.disabled = false;
+      const success = document.getElementById('formSuccess');
+      success.style.display = 'block';
+      setTimeout(() => success.style.display = 'none', 4000);
+    }, 1200);
+  }
+
+  // ====== MOBILE NAV ======
+  (function () {
+    const navUl = document.querySelector('nav ul');
+    const burger = document.createElement('button');
+    burger.innerHTML = '☰';
+    burger.style.cssText = 'display:none;background:none;border:none;color:#FFF3B0;font-size:24px;cursor:pointer;padding:0;';
+    navUl.parentNode.insertBefore(burger, navUl);
+    function checkMobile() {
+      if (window.innerWidth <= 900) {
+        burger.style.display = 'block';
+        navUl.style.cssText = 'display:none;flex-direction:column;position:absolute;top:70px;left:0;right:0;background:rgba(5,5,5,0.98);padding:20px 30px;gap:20px;z-index:999;';
+        burger.onclick = () => { const vis = navUl.style.display === 'flex'; navUl.style.display = vis ? 'none' : 'flex'; burger.innerHTML = vis ? '☰' : '✕'; };
+      } else {
+        burger.style.display = 'none';
+        navUl.style.cssText = '';
+      }
+    }
+    window.addEventListener('resize', checkMobile);
+    checkMobile();
+    navUl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { if (window.innerWidth <= 900) { navUl.style.display = 'none'; burger.innerHTML = '☰'; } }));
+  })();
+
+  // ====== HERO BUTTONS ======
+  const heroPrimary = document.querySelector('.btn-primary[href="#contact"]');
+  if (heroPrimary) heroPrimary.addEventListener('click', e => { e.preventDefault(); window.showPage('contact'); });
+  const heroGhost = document.querySelector('.btn-ghost[href="#programs"]');
+  if (heroGhost) heroGhost.addEventListener('click', e => { e.preventDefault(); window.showPage('programs'); });
+
+  // ====== FOOTER SOCIALS ======
+  const socialLinks = ['https://instagram.com', 'https://twitter.com', 'https://youtube.com'];
+  document.querySelectorAll('footer [style*="font-size:20px"]').forEach((el, i) => {
+    el.style.cursor = 'pointer';
+    el.title = ['Instagram','Twitter','YouTube'][i];
+    el.addEventListener('click', () => window.open(socialLinks[i], '_blank'));
+  });
+
+</script>
+</body>
+</html>
